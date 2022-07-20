@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     # ('route', controller, nickname)
     path('', views.home, name='home'),
-    path('about/', views.about, name='about')
+    path('about/', views.about, name='about'),
+    path('books/', views.books_index, name='books'),
 ]
 
