@@ -1,20 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Book
 
 # Faux Cat Data - Database simulation
-class Book:
-    def __init__(self, name, author, description, price):
-        self.name = name
-        self.author = author
-        self.description = description
-        self.price = price
+# class Book:
+#     def __init__(self, name, author, description, price):
+#         self.name = name
+#         self.author = author
+#         self.description = description
+#         self.price = price
 
-    # Book objects that are being instantiated from the Book class.
-books = [
-    Book('Rich Dad Poor Dad', 'Robert T. Kiyosaki', ' What the Rich Teach Their Kids About Money That the Poor and Middle Class Do Not!', 7),
-    Book('Think and Grow Rich', 'Napoleon Hill', '"Think and Grow Rich" is a motivational personal development and self-help book written by Napoleon Hill and inspired by a suggestion from Scottish-American businessman Andrew Carnegie."', 15),
-    Book('The Alchemist', 'Paulo Coelho', 'A Fable About Following Your Dream', 14),
-]
+#     # Book objects that are being instantiated from the Book class.
+# books = [
+#     Book('Rich Dad Poor Dad', 'Robert T. Kiyosaki', ' What the Rich Teach Their Kids About Money That the Poor and Middle Class Do Not!', 7),
+#     Book('Think and Grow Rich', 'Napoleon Hill', '"Think and Grow Rich" is a motivational personal development and self-help book written by Napoleon Hill and inspired by a suggestion from Scottish-American businessman Andrew Carnegie."', 15),
+#     Book('The Alchemist', 'Paulo Coelho', 'A Fable About Following Your Dream', 14),
+# ]
 
 
 
@@ -35,4 +36,13 @@ def about(request):
     return render(request, 'about.html')
 
 def books_index(request):
+    # books = Book.objects.all()
+    # use code below if you want to order by id
+    books = Book.objects.order_by('id')
     return render(request, 'books/index.html', {'books': books})
+
+def books_detail(request, book_id):
+    # Get the individual book
+    book = Book.objects.get(id=book_id)
+    # Render template, pass it the book
+    return render(request, 'books/detail.html', {'book': book})
