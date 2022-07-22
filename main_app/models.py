@@ -6,8 +6,3 @@ from django.db import models
 # Name, author, description, price
 
 # Create your models here.
-class Book(models.Model):
-    name = models.CharField(max_length=100)
-    author = models.CharField(max_length=100)
-    description = models.TextField(max_length=250)
-    price = models.IntegerField()
