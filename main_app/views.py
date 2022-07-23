@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
+from django.views.generic.edit import CreateView
 
 # Faux Cat Data - Database simulation
 # class Book:
@@ -46,3 +47,8 @@ def books_detail(request, book_id):
     book = Book.objects.get(id=book_id)
     # Render template, pass it the book
     return render(request, 'books/detail.html', {'book': book})
+
+class BookCreate(CreateView):
+    model = Book
+    fields = '__all__'
+    success_url = '/books/'

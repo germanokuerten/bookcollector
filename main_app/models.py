@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Django built a parent class called models that has a bunch of functionality built in.
 
@@ -15,3 +16,6 @@ class Book(models.Model):
     def __str__(self):
         # return self.name
         return f"{self.name} - {self.author}"
+
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'book_id': self.id})
