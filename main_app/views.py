@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 # Faux Cat Data - Database simulation
 # class Book:
@@ -51,4 +51,13 @@ def books_detail(request, book_id):
 class BookCreate(CreateView):
     model = Book
     fields = '__all__'
+    success_url = '/books/'
+
+class BookUpdate(UpdateView):
+    model = Book
+    # Let's disallow the renaming of a cat by excluding the name field!
+    fields = ['author', 'description', 'price']
+
+class BookDelete(DeleteView):
+    model = Book
     success_url = '/books/'

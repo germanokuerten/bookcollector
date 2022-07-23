@@ -10,5 +10,7 @@ urlpatterns = [
     path('books/<int:book_id>/', views.books_detail, name='detail'),
     # new route used to show a form and create a book
     path('books/create/', views.BookCreate.as_view(), name='books_create'),
+    path('books/<int:pk>/update/', views.BookUpdate.as_view(), name='books_update'),
+    path('books/<int:pk>/delete/', views.BookDelete.as_view(), name='books_delete'),
 ]
 
