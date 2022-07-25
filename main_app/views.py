@@ -48,11 +48,16 @@ def books_index(request):
 def books_detail(request, book_id):
     # Get the individual book
     book = Book.objects.get(id=book_id)
+    stores_book_not_available = Store.objects.exclude(id__in = book.stores.all().values_list('id'))
+
+    # print(stores_book_not_available)
+    # ps. in order to get the print, you must refresh the page, and it will show up at the terminal when server is running.
 
     # Instantiate our feeding form
     feedback_form = FeedbackForm()
     # Render template, pass it the book
     return render(request, 'books/detail.html', {'book': book, 'feedback_form': feedback_form })
+
 
 class BookCreate(CreateView):
     model = Book
@@ -94,6 +99,7 @@ class StoreDetail(DetailView):
 class StoreCreate(CreateView):
   model = Store
   fields = '__all__'
+  success_url = '/stores/'
 
 class StoreUpdate(UpdateView):
   model = Store

@@ -19,7 +19,7 @@ class Store(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('store_detail', kwargs={'pk': self.id})
+        return reverse('stores_detail', kwargs={'pk': self.id})
 
 # Book Model
 # Name, author, description, price
