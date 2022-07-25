@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book
+from .models import Book, Store
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 from .forms import FeedbackForm
 
 # Faux Cat Data - Database simulation
@@ -65,3 +66,38 @@ class BookUpdate(UpdateView):
 class BookDelete(DeleteView):
     model = Book
     success_url = '/books/'
+
+
+
+
+def add_feedback(request, book_id):
+	# create the ModelForm using the data in request.POST
+  form = FeedbackForm(request.POST)
+  # validate the form
+  if form.is_valid():
+    # don't save the form to the db until it
+    # has the cat_id assigned
+    new_feedback = form.save(commit=False)
+    new_feedback.book_id = book_id
+    new_feedback.save()
+  return redirect('detail', book_id=book_id)
+
+
+
+class StoreList(ListView):
+  model = Store
+
+class StoreDetail(DetailView):
+  model = Store
+
+class StoreCreate(CreateView):
+  model = Store
+  fields = '__all__'
+
+class StoreUpdate(UpdateView):
+  model = Store
+  fields = ['name']
+
+class StoreDelete(DeleteView):
+  model = Store
+  success_url = '/stores/'

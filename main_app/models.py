@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import date
 
 #select options for feeding types in Feeding Model
 SCORES = (
@@ -9,6 +10,16 @@ SCORES = (
 )
 
 # Django built a parent class called models that has a bunch of functionality built in.
+
+class Store(models.Model):
+    name = models.CharField(max_length=50)
+    # color = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('store_detail', kwargs={'pk': self.id})
 
 # Book Model
 # Name, author, description, price
@@ -43,3 +54,6 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f'{self.get_score_display()} on {self.date}' 
+
+    # class Meta:
+    #     ordering = ['-date']
