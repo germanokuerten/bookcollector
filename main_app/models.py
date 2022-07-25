@@ -39,10 +39,13 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'book_id': self.id})
 
+    def score_for_today(self):
+        return self.feedback_set.filter(date=date.today()).count() >= len(SCORES)
+
 class Feedback(models.Model):
     # This title 'Feedback Date' will be seen by the user in the forms.
-    date = models.DateField('Feedback Date')
-    score = models.CharField('Score Here',
+    date = models.DateField('feedback date')
+    score = models.CharField(
         max_length=1,
         # add the 'choices' field option
         choices=SCORES,
@@ -56,5 +59,5 @@ class Feedback(models.Model):
     def __str__(self):
         return f'{self.get_score_display()} on {self.date}' 
 
-    # class Meta:
-    #     ordering = ['-date']
+    class Meta:
+        ordering = ['-date']

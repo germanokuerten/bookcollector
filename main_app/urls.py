@@ -15,6 +15,8 @@ urlpatterns = [
 
     path('books/<int:book_id>/add_feedback/', views.add_feedback, name='add_feedback'),
 
+    path('books/<int:book_id>/assoc_store/<int:store_id>/', views.assoc_store, name='assoc_store'),
+
     path('stores/', views.StoreList.as_view(), name='stores_index'),
     path('stores/<int:pk>/', views.StoreDetail.as_view(), name='stores_detail'),
     path('stores/create/', views.StoreCreate.as_view(), name='stores_create'),

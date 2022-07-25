@@ -56,12 +56,12 @@ def books_detail(request, book_id):
     # Instantiate our feeding form
     feedback_form = FeedbackForm()
     # Render template, pass it the book
-    return render(request, 'books/detail.html', {'book': book, 'feedback_form': feedback_form })
+    return render(request, 'books/detail.html', {'book': book, 'feedback_form': feedback_form, 'stores': stores_book_not_available })
 
 
 class BookCreate(CreateView):
     model = Book
-    fields = '__all__'
+    fields = ['name', 'author', 'description', 'price']
     success_url = '/books/'
 
 class BookUpdate(UpdateView):
@@ -88,6 +88,9 @@ def add_feedback(request, book_id):
     new_feedback.save()
   return redirect('detail', book_id=book_id)
 
+def assoc_store(request, book_id, store_id):
+    Book.objects.get(id=book_id).stores.add(store_id)
+    return redirect('detail', book_id=book_id)
 
 
 class StoreList(ListView):
