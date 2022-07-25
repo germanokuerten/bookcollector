@@ -28,7 +28,8 @@ from .forms import FeedbackForm
 # This is equivalent to our controller /routes (in express js)
 
 def home(request):
-    return HttpResponse('<h1>Hello Mundão 📚📚📚</h1>')
+    # return HttpResponse('<h1>Hello Mundão 📚📚📚</h1>')
+    return render(request, 'home.html')
 
 def about(request):
     # If you want t osend back raw txt or an html string use HttpResponse

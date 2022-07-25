@@ -30,6 +30,7 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     price = models.IntegerField()
+    stores = models.ManyToManyField(Store)
 
     def __str__(self):
         # return self.name
