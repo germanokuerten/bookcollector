@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from .forms import FeedbackForm
 
 # Faux Cat Data - Database simulation
 # class Book:
@@ -45,8 +46,11 @@ def books_index(request):
 def books_detail(request, book_id):
     # Get the individual book
     book = Book.objects.get(id=book_id)
+
+    # Instantiate our feeding form
+    feedback_form = FeedbackForm()
     # Render template, pass it the book
-    return render(request, 'books/detail.html', {'book': book})
+    return render(request, 'books/detail.html', {'book': book, 'feedback_form': feedback_form })
 
 class BookCreate(CreateView):
     model = Book
@@ -56,7 +60,7 @@ class BookCreate(CreateView):
 class BookUpdate(UpdateView):
     model = Book
     # Let's disallow the renaming of a cat by excluding the name field!
-    fields = ['author', 'description', 'price']
+    fields = ['name', 'author', 'description', 'price']
 
 class BookDelete(DeleteView):
     model = Book

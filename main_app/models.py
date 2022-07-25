@@ -1,6 +1,13 @@
 from django.db import models
 from django.urls import reverse
 
+#select options for feeding types in Feeding Model
+SCORES = (
+    ('G', 'Great'),
+    ('O', 'Okay'),
+    ('T', 'Terrible'),
+)
+
 # Django built a parent class called models that has a bunch of functionality built in.
 
 # Book Model
@@ -19,3 +26,20 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'book_id': self.id})
+
+class Feedback(models.Model):
+    # This title 'Feedback Date' will be seen by the user in the forms.
+    date = models.DateField('Feedback Date')
+    score = models.CharField('Score Here',
+        max_length=1,
+        # add the 'choices' field option
+        choices=SCORES,
+        # set the default value for meal to be 'B'
+        default=SCORES[0][0]
+  )
+
+    # This is where the relationship is defined (one to many in this case)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.get_score_display()} on {self.date}' 
