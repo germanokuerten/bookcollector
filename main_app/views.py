@@ -1,9 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book, Store
+from .models import Book, Store, Photo
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .forms import FeedbackForm
+# Aws stuff
+# uuid gives us a globally unique string
+import uuid 
+import boto3
+
+S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+BUCKET = 'book-collector-gk'
 
 # Faux Cat Data - Database simulation
 # class Book:
