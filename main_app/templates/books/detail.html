@@ -21,6 +21,21 @@
         <a href="{% url 'books_delete' book.id %}">Delete</a>
       </div>
     </div>
+
+    <!-- Insert Photo Card here -->
+    {% for photo in book.photo_set.all %}
+      <img class="responsive-img card-panel" src="{{photo.url}}" alt="book image">
+    {% empty %}
+      <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+    {% endfor %}
+    <!-- Photo button/form -->
+    <form action="{% url 'add_photo' book.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+      {% csrf_token %}
+      <input type="file" name="photo-file">
+      <br><br>
+      <input type="submit" class="btn" value="Upload Photo">
+  </form>
+
   </div>
 
   <div class="col s6">

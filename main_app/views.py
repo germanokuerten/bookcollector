@@ -82,7 +82,6 @@ class BookDelete(DeleteView):
 
 
 
-
 def add_feedback(request, book_id):
 	# create the ModelForm using the data in request.POST
   form = FeedbackForm(request.POST)
@@ -94,6 +93,25 @@ def add_feedback(request, book_id):
     new_feedback.book_id = book_id
     new_feedback.save()
   return redirect('detail', book_id=book_id)
+
+def add_photo(request, book_id):
+    # photo-file will be the "name" attribute on the <input type="file">
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        # need a unique "key" for S3 / needs image file extension too
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        # just in case something goes wrong
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            # build the full url string
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            # we can assign to cat_id or cat (if you have a cat object)
+            photo = Photo(url=url, book_id=book_id)
+            photo.save()
+        except:
+            print('An error occurred - S3')
+    return redirect('detail', book_id=book_id)
 
 def assoc_store(request, book_id, store_id):
     Book.objects.get(id=book_id).stores.add(store_id)

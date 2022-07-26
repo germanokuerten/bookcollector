@@ -21,7 +21,7 @@ urlpatterns = [
     # 'books/<int:book_id>/add_photos/', this is the end point
     # views.add_photo, the view function responsible to handing the endpoint
     # name='add_photo', name property that we can use when we want to access this via a form.
-    path('books/<int:book_id>/add_photos/', views.add_photo, name='add_photo'),
+    path('books/<int:book_id>/add_photo/', views.add_photo, name='add_photo'),
 
 
     path('books/<int:book_id>/assoc_store/<int:store_id>/', views.assoc_store, name='assoc_store'),
