@@ -3,6 +3,13 @@ from django.http import HttpResponse
 from .models import Book, Store, Photo
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+
+# login required for class based views
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .forms import FeedbackForm
 # Aws stuff
 # uuid gives us a globally unique string
@@ -46,12 +53,14 @@ def about(request):
     # Django will look into the folder called templates and return the specific file.
     return render(request, 'about.html')
 
+@login_required
 def books_index(request):
     # books = Book.objects.all()
     # use code below if you want to order by id
     books = Book.objects.order_by('id')
     return render(request, 'books/index.html', {'books': books})
 
+@login_required
 def books_detail(request, book_id):
     # Get the individual book
     book = Book.objects.get(id=book_id)
@@ -66,22 +75,26 @@ def books_detail(request, book_id):
     return render(request, 'books/detail.html', {'book': book, 'feedback_form': feedback_form, 'stores': stores_book_not_available })
 
 
-class BookCreate(CreateView):
+class BookCreate(LoginRequiredMixin, CreateView):
     model = Book
     fields = ['name', 'author', 'description', 'price']
     success_url = '/books/'
 
-class BookUpdate(UpdateView):
+    def form_valid(self, form):
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+
+class BookUpdate(LoginRequiredMixin, UpdateView):
     model = Book
     # Let's disallow the renaming of a cat by excluding the name field!
     fields = ['name', 'author', 'description', 'price']
 
-class BookDelete(DeleteView):
+class BookDelete(LoginRequiredMixin, DeleteView):
     model = Book
     success_url = '/books/'
 
 
-
+@login_required
 def add_feedback(request, book_id):
 	# create the ModelForm using the data in request.POST
   form = FeedbackForm(request.POST)
@@ -94,6 +107,7 @@ def add_feedback(request, book_id):
     new_feedback.save()
   return redirect('detail', book_id=book_id)
 
+@login_required
 def add_photo(request, book_id):
     # photo-file will be the "name" attribute on the <input type="file">
     photo_file = request.FILES.get('photo-file', None)
@@ -113,26 +127,51 @@ def add_photo(request, book_id):
             print('An error occurred - S3')
     return redirect('detail', book_id=book_id)
 
+@login_required
 def assoc_store(request, book_id, store_id):
     Book.objects.get(id=book_id).stores.add(store_id)
     return redirect('detail', book_id=book_id)
 
+@login_required
+def unassoc_store(request, book_id, store_id):
+    Book.objects.get(id=book_id).stores.remove(store_id)
+    return redirect('detail', book_id=book_id)
 
-class StoreList(ListView):
+
+class StoreList(LoginRequiredMixin, ListView):
   model = Store
 
-class StoreDetail(DetailView):
+class StoreDetail(LoginRequiredMixin, DetailView):
   model = Store
 
-class StoreCreate(CreateView):
+class StoreCreate(LoginRequiredMixin, CreateView):
   model = Store
   fields = '__all__'
   success_url = '/stores/'
 
-class StoreUpdate(UpdateView):
+class StoreUpdate(LoginRequiredMixin, UpdateView):
   model = Store
   fields = ['name']
 
-class StoreDelete(DeleteView):
+class StoreDelete(LoginRequiredMixin, DeleteView):
   model = Store
   success_url = '/stores/'
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    # This is how to create a 'user' form object
+    # that includes the data from the browser
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      # This will add the user to the database
+      user = form.save()
+      # This is how we log a user in via code
+      login(request, user)
+      return redirect('index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  # A bad POST or a GET request, so render signup.html with an empty form
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'registration/signup.html', context)
